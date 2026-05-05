@@ -2,118 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force rebuild - cache cleared */
-
-/* === Custom Utility Classes === */
-@layer utilities {
-  .flex-center {
-    @apply flex justify-center items-center;
-  }
-
-  .flex-between {
-    @apply flex justify-between items-center;
-  }
-
-  .bg-dark1 {
-    background-color: var(--dark1);
-  }
-
-  .bg-dark2 {
-    background-color: var(--dark2);
-  }
-
-  .bg-blue1 {
-    background-color: var(--blue1);
-  }
-  
-  .bg-sky1 {
-    background-color: var(--sky1);
-  }
-  
-  .bg-sky2 {
-    background-color: #ECF0FF;
-  }
-  
-  .bg-sky3 {
-    background-color: #F5FCFF;
-  }
-  
-  .bg-orange {
-    background-color: #FF742E;
-  }
-  
-  .bg-purple {
-    background-color: #830EF9;
-  }
-  
-  .bg-yellow {
-    background-color: #F9A90E;
-  }
-  .text-dark1 {
-    color: var(--dark1);
-  }
-
-  .text-dark2 {
-    color: var(--dark2);
-  }
-
-  .text-blue1 {
-    color: var(--blue1);
-  }
-
-  .bg-hero {
-    background-image: url('/icons/image-home.png');
-  }
-}
-.glassmorphism{
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
 /* === CSS Variables === */
 :root {
+  /* Pastel page palette */
+  --page-bg:        #F5F0FF;
+  --surface:        #FFFFFF;
+  --surface-2:      #F5F0FF;
+  --surface-3:      #EDE9FE;
+
+  /* Sidebar deep indigo→violet */
+  --sidebar-from:   #3730A3;
+  --sidebar-mid:    #4338CA;
+  --sidebar-to:     #5B21B6;
+
+  /* Brand */
+  --primary:        #4F46E5;
+  --primary-light:  #EEF2FF;
+  --primary-dark:   #3730A3;
+
+  /* Text */
+  --text-primary:   #1E1B4B;
+  --text-secondary: #6B7280;
+  --text-muted:     #9CA3AF;
+
+  /* Borders */
+  --border:         #E0E7FF;
+
+  /* Legacy dark vars — kept for meeting room */
   --dark1: #1C1F2E;
   --dark2: #161925;
-  --blue1: #2c4fa8;
-  --sky1: #C9DDFF;
+  --blue1: #4F46E5;
+  --sky1:  #C9DDFF;
 
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-
-  --border: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --input: oklch(0.922 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.556 0 0);
-  --input: oklch(1 0 0 / 15%);
+  --radius: 0.75rem;
 }
 
 /* === Base Layer === */
 @layer base {
   * {
     border-color: var(--border);
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-poppins), 'Inter', system-ui, sans-serif;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a, button {
+    transition: all 0.2s ease;
+  }
+
+  /* Pastel-themed scrollbar */
+  ::-webkit-scrollbar        { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track  { background: #EDE9FE; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb  { background: #A5B4FC; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #818CF8; }
+}
+
+/* === Custom Utility Classes === */
+@layer utilities {
+  .flex-center   { @apply flex justify-center items-center; }
+  .flex-between  { @apply flex justify-between items-center; }
+
+  /* Page background */
+  .bg-page       { background-color: var(--page-bg); }
+  .bg-surface    { background-color: var(--surface); }
+  .bg-surface2   { background-color: var(--surface-2); }
+  .bg-surface3   { background-color: var(--surface-3); }
+
+  /* Sidebar gradient */
+  .bg-sidebar    { background: linear-gradient(180deg, var(--sidebar-from) 0%, var(--sidebar-mid) 50%, var(--sidebar-to) 100%); }
+
+  /* Legacy dark utilities — kept for meeting room */
+  .bg-dark1      { background-color: var(--dark1); }
+  .bg-dark2      { background-color: var(--dark2); }
+  .bg-blue1      { background-color: var(--blue1); }
+  .bg-sky1       { background-color: var(--sky1); }
+  .bg-sky2       { background-color: #ECF0FF; }
+  .bg-sky3       { background-color: #F5FCFF; }
+  .bg-orange     { background-color: #FF742E; }
+  .bg-purple     { background-color: #830EF9; }
+  .bg-yellow     { background-color: #F9A90E; }
+
+  .text-dark1    { color: var(--dark1); }
+  .text-dark2    { color: var(--dark2); }
+  .text-blue1    { color: var(--blue1); }
+
+  .bg-hero       { background-image: url('/icons/image-home.png'); }
+
+  /* Hover card lift */
+  .card-lift {
+    @apply transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1;
+  }
+
+  /* Gradient text utility */
+  .text-gradient-indigo {
+    @apply bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent;
+  }
+  .text-gradient-violet {
+    @apply bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent;
   }
 }
 
-/* === Clerk Provider Icon Overrides (Only GitHub) === */
+/* Glassmorphism — updated for lavender pastels */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+/* Sidebar glassmorphism */
+.glass-sidebar {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Clerk GitHub icon */
 .cl-providerIcon_github,
 [class*="providerIcon_github"],
 [class*="github-provider"],
 [class*="githubProvider"] {
-  filter: invert(1) !important;
+  filter: none !important;
 }
 
-
-
-/* Optional: Generic social button override only for GitHub (if needed) */
-[class*="socialButtonsBlockButton"][class*="github"] img,
-[class*="socialButton"][class*="github"] img {
-  filter: invert(1) !important;
+/* Print */
+@media print {
+  .print\:hidden { display: none !important; }
 }

@@ -1,64 +1,35 @@
-import { useUser } from "@clerk/nextjs";
-import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 
 export const useGetCalls = () => {
-    const [calls, setCalls] = useState<Call[]>([])
-    const [isLoading, setIsLoading] = useState(false);
-    const client = useStreamVideoClient();
-    const { user }= useUser();
+    const [upcomingCalls, setUpcomingCalls] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(()=>{
-        const loadCalls = async () => {
-            if(!client || !user?.id) return;
-            
-            setIsLoading(true);
-
+    useEffect(() => {
+        const fetchCalls = async () => {
             try {
-                const {calls }= await client.queryCalls({
-                  sort: [{field: 'starts_at' , direction: -1 }],
-                  filter_conditions:{
-                    starts_at: { $exists: true},
-                    $or:[
-                        { created_by_user_id: user.id },
-                        { members: { $in: [user.id] } },
-                    ]
-                  }
-                });
-                setCalls(calls);
-                
+                const res = await fetch('http://localhost:3001/api/meetings');
+                if (res.ok) {
+                    const data = await res.json();
+                    // Filter for only upcoming calls
+                    const now = new Date();
+                    const upcoming = data.filter((call: any) => new Date(call.dateTime) > now);
+                    setUpcomingCalls(upcoming);
+                }
             } catch (error) {
-                console.log(error);
-                
-            } finally{
+                console.error("Failed to fetch meetings:", error);
+            } finally {
                 setIsLoading(false);
             }
+        };
 
-        }
+        fetchCalls();
+    }, []);
 
-        loadCalls();
-
-    }, [client, user?.id]);
-
-    const now = new Date();
-
-
-    const endedCalls = calls.filter(({state: {startsAt, 
-        endedAt }}:Call ) =>{
-            return (startsAt && new Date(startsAt) < now || 
-            !!endedAt )
-        }  )
-    const upcomingCalls = calls.filter(({state:{
-        startsAt }}: Call) =>{
-            return startsAt && new Date(startsAt) > now
-        })
-   
-
-    return{
-        endedCalls,
+    // Other calls not supported yet in pure WebRTC migration
+    return {
+        endedCalls: [],
         upcomingCalls,
-        callrecordings: calls,
+        callrecordings: [],
         isLoading,
     }
-
 }

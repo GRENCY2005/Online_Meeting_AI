@@ -1,71 +1,12 @@
 "use client";
 
-<<<<<<< HEAD
-import { Button } from '@/components/ui/button'
-import { useGetCallById } from '@/hooks/useGetCallById'
-import { useUser } from '@clerk/nextjs'
-import { Description } from '@radix-ui/react-dialog'
-import { useStreamVideoClient } from '@stream-io/video-react-sdk'
-import { useRouter } from 'next/navigation'
-import { title } from 'process'
-import React from 'react'
-import { start } from 'repl'
-
-const Table =({ title, Description} : {title: 
-  string, Description: string}) => (
-    <div className="flex flex-col items-start gap-2 
-    xl:flex-row">
-      <h1 className="text-base font-medium text-sky-1
-      lg:text-xl xl:min-w-32>{title}:</h1>
-      <h1 className="truncate text-sm font-bold sm:max-w-[320px]">
-        {description}
-      </h1>
-      
-  
-</h1>
-
-
-  )
-
-const PersonalRoom = () => {
-  const { user } = useUser()
-  const meetingId = user?.id;
-  const { toast } = useToast();
-  const client = useStreamVideoClient();
-  const router = useRouter();
-
-   const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meetingId}?
-   personal=true`;
-
-   const { call } = useGetCallById(meetingId!);
-
-  
-   const startRoom = async () => {
-
-    if(!client || !user) return;
-
-
-    if(!call) {
-      const newCall = client.call('default', meetingId!);
-    }
-
-      await newCall.getOrCreate({
-        data: {
-          starts_at: new Date().toISOString(),
-      }});
-
-      router.push(`/meeting/${meetingId}?personal=true`);
-   }
-
-=======
 import React, { useMemo } from 'react'
 import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { Copy, ExternalLink, User, Sparkles } from 'lucide-react'
 
 const PersonalRoom = () => {
-  const router = useRouter();
   const { user, isLoaded, isSignedIn } = useUser();
 
   const roomId = useMemo(() => user?.id ?? '', [user?.id]);
@@ -76,16 +17,24 @@ const PersonalRoom = () => {
 
   if (!isLoaded) {
     return (
-      <section className='flex size-full items-center justify-center text-white'>
-        <p>Loading...</p>
+      <section className='flex size-full items-center justify-center'>
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-9 w-9 border-[3px] border-indigo-100 border-t-indigo-500"></div>
+          <p className="text-gray-400 text-sm font-medium">Loading your room...</p>
+        </div>
       </section>
     );
   }
 
   if (!isSignedIn || !roomId) {
     return (
-      <section className='flex size-full items-center justify-center text-white'>
-        <p>Please sign in to access your personal room.</p>
+      <section className='flex size-full items-center justify-center'>
+        <div className="text-center bg-white rounded-3xl border border-indigo-100/60 shadow-card p-12">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 flex items-center justify-center mx-auto mb-5">
+            <User className="w-7 h-7 text-indigo-300" />
+          </div>
+          <p className="text-gray-500 text-sm">Please sign in to access your personal room.</p>
+        </div>
       </section>
     );
   }
@@ -98,72 +47,69 @@ const PersonalRoom = () => {
       toast.error('Failed to copy link');
     }
   };
->>>>>>> ab6eac1e5c5ab385e9460daa1ed39baebde6d0b2
-
-  const handleJoin = async () => {
-    const url = `/meeting/${roomId}?personal=true`;
-    try {
-      console.log('[PersonalRoom] Navigating to', url);
-      await router.push(url);
-      // Some Next.js versions ignore awaiting push; add a microtask to ensure state flush
-      setTimeout(() => {
-        // no-op
-      }, 0);
-    } catch (e) {
-      console.warn('[PersonalRoom] router.push failed, falling back to location.assign', e);
-      if (typeof window !== 'undefined') {
-        window.location.assign(url);
-      }
-    }
-  };
 
   return (
-<<<<<<< HEAD
-    <section className='flex size-full flex-col gap-10 text-white'>
-    <h1 className='text-3xl font-bold'>
-      Personal Room
-    </h1>
-    <div className='flex w-full flex-col gap-8
-    xl:max-w-[900px]'>
-      <Table  title="Topic" Description={`${user?.
-      username}'s meeting Room`} />
-      <Table  title="Meeting ID" Description=
-      {meetingId!} />
-      <Table  title="Invite Link" Description=
-      {meetingLink} />
-    </div>
-    <div className='flex-gap-5'>
-      <Button className="bg-blue-1" onClick={startRoom}>
-        Start Meeting
-      </Button>
-      <Button className="bg-dark-3" onClick={() => {
-         navigator.clipboard.writeText(meetingLink);
-         toast({
-          title: 'Link copied'})
-        }}
-
-      }}>
-        Copy Invitation
-     </Button>
-=======
-    <section className='flex size-full flex-col gap-6 text-white'>
-      <h1 className='text-3xl font-bold'>Personal Room</h1>
-
-      <div className='rounded-md bg-dark1 p-4'>
-        <p className='mb-2 text-sm text-gray-300'>Your Room ID</p>
-        <div className='flex items-center justify-between rounded-md bg-dark2 p-3'>
-          <span className='truncate'>{roomId}</span>
-          <button onClick={handleCopy} className='ml-3 rounded-md bg-blue1 px-3 py-1 hover:opacity-90'>Copy Link</button>
+    <section className='flex size-full flex-col gap-8 animate-fade-in'>
+      {/* Page header */}
+      <header className="flex items-center gap-4">
+        <div className="flex items-center justify-center w-12 h-12 rounded-2xl
+          bg-gradient-to-br from-indigo-100 to-violet-100 border border-indigo-200/50 shadow-sm">
+          <Sparkles className="w-5 h-5 text-indigo-500" />
         </div>
-        <p className='mt-2 break-all text-xs text-gray-400'>{inviteLink}</p>
-      </div>
->>>>>>> ab6eac1e5c5ab385e9460daa1ed39baebde6d0b2
+        <div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            Personal Room
+          </h1>
+          <p className="text-sm text-gray-400 mt-0.5 font-medium">Your dedicated meeting space — always available</p>
+        </div>
+      </header>
 
-      <div className='flex gap-3 items-center'>
-        <Link href={`/meeting/${roomId}?personal=true`} className='rounded-md bg-green-600 px-4 py-2 hover:bg-green-700'>
-          Start / Join Personal Room
-        </Link>
-        <button type="button" onClick={handleJoin} className='rounded-md bg-dark2 px-4 py-2 hover:bg-dark1'>Try Programmatic Nav</button>
+      <div className="h-px bg-gradient-to-r from-indigo-200 via-violet-200 to-transparent" />
+
+      <div className='max-w-2xl space-y-5'>
+        {/* Room ID card */}
+        <div className='relative rounded-3xl bg-white border border-indigo-100/60 shadow-card overflow-hidden'>
+          {/* Top accent */}
+          <div className="h-1 bg-gradient-to-r from-indigo-400 via-violet-500 to-purple-400" />
+          <div className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <p className='text-xs font-bold text-gray-400 uppercase tracking-widest'>Your Room ID</p>
+            </div>
+
+            <div className='flex items-center justify-between rounded-2xl bg-gradient-to-r from-indigo-50/80 to-violet-50/60
+              border border-indigo-100 px-4 py-3 gap-3'>
+              <span className='truncate text-sm font-mono text-indigo-700'>{roomId}</span>
+              <button
+                onClick={handleCopy}
+                className='flex items-center gap-1.5 rounded-xl
+                  bg-gradient-to-r from-indigo-500 to-violet-600
+                  hover:from-indigo-600 hover:to-violet-700
+                  text-white text-xs px-3.5 py-1.5 font-semibold
+                  transition-all duration-200 shrink-0 shadow-sm hover:shadow-glow-indigo active:scale-[0.96]'
+              >
+                <Copy size={11} />
+                Copy Link
+              </button>
+            </div>
+            <p className='mt-3 break-all text-[11px] text-gray-400 font-mono leading-relaxed bg-gray-50 rounded-xl px-3 py-2'>{inviteLink}</p>
+          </div>
+        </div>
+
+        {/* Action button */}
+        <div className='flex gap-3 items-center flex-wrap'>
+          <Link
+            href={`/meeting/${roomId}?personal=true`}
+            className='flex items-center gap-2 rounded-2xl
+              bg-gradient-to-r from-indigo-500 to-violet-600
+              hover:from-indigo-600 hover:to-violet-700
+              text-white px-6 py-3 text-sm font-semibold
+              transition-all duration-200 shadow-sm hover:shadow-glow-indigo active:scale-[0.97]'
+          >
+            <ExternalLink size={15} />
+            Start / Join Room
+          </Link>
+        </div>
       </div>
     </section>
   )

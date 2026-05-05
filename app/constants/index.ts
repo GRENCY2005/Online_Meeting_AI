@@ -10,14 +10,14 @@ export const sliderLinks = [
         imgUrl:'/icons/upcoming.png',
     },
      {
-        label:'Previous',
-        route:'/previous',
-        imgUrl:'/icons/previous.png',
+        label:'Meeting Recaps',
+        route:'/recaps',
+        imgUrl:'/icons/recordings.svg',
     },
      {
-        label:'Recording',
-        route:'/recording',
-        imgUrl:'/icons/recording.png',
+        label:'Smart Schedule',
+        route:'/schedule',
+        imgUrl:'/icons/upcoming.svg',
     },
      {
         label:'Personal Room',
